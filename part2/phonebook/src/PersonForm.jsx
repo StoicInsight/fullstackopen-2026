@@ -6,11 +6,9 @@ const PersonForm = (props) => {
   const [number, setNumber] = useState('');
 
   const changeName = (e) => {
-    console.log('Input change', e.target);
     setName(e.target.value);
   };
   const changeNumber = (e) => {
-    console.log('Input change', e.target);
     setNumber(e.target.value);
   };
 
@@ -20,7 +18,7 @@ const PersonForm = (props) => {
         name: <input value={name} onChange={changeName} />
       </div>
       <div>
-        name: <input value={number} onChange={changeNumber} />
+        number: <input value={number} onChange={changeNumber} />
       </div>
       <div>
         <button type='submit'>add</button>

@@ -1,25 +1,19 @@
 import React from 'react';
+import phoneService from './services/phone.js';
 
 const People = (props) => {
-  console.log('Filtered People Component', props.filteredPeople);
-  console.log('People Component', props.persons);
   return (
     <ul>
-      {props.filteredPeople.length > 0
-        ? props.filteredPeople.map((people, i) => {
-            return (
-              <li key={i}>
-                {people.name} {people.number}
-              </li>
-            );
-          })
-        : props.persons.map((people, i) => {
-            return (
-              <li key={i}>
-                {people.name} {people.number}
-              </li>
-            );
-          })}
+      {props.persons.map((people, i) => {
+        return (
+          <div className='' key={people.id}>
+            <li key={i}>
+              {people.name} {people.number}
+            </li>
+            <button onClick={() => props.deleteNumber(people)}>delete</button>
+          </div>
+        );
+      })}
     </ul>
   );
 };

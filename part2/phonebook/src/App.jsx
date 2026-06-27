@@ -3,15 +3,25 @@ import Filter from './Filter';
 import PersonForm from './PersonForm';
 import People from './People';
 import phoneService from './services/phone.js';
+import Notification from './Notification.jsx';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [filteredPeople, setFilteredPeople] = useState([]);
+  const [notification, SetNotification] = useState({ message: '', type: '' });
 
   useEffect(() => {
     phoneService.getAll().then((res) => setPersons(res));
     // setPersons(getPhones);
   }, []);
+
+  const changeNotification = (message, type) => {
+    SetNotification({ message: message, type: type });
+
+    setTimeout(() => {
+      SetNotification('');
+    }, 3000);
+  };
 
   const addPerson = async (event, name, number) => {
     event.preventDefault();
@@ -19,7 +29,6 @@ const App = () => {
     const newPerson = {
       name: name,
       number: number,
-      // id: String(persons.length + 2),
     };
     console.log('New person', newPerson);
     const checkName = persons.find((person) => person.name === newPerson.name);
@@ -27,7 +36,7 @@ const App = () => {
       (person) => person.number === newPerson.number,
     );
 
-    if (checkName && checkPhone === undefined) {
+    if (checkName && !checkPhone) {
       if (
         window.confirm(
           `${newPerson.name} is already added to phonebook, replace the old number with a new one?`,
@@ -36,13 +45,19 @@ const App = () => {
         const phone = persons.find((person) => person.name === newPerson.name);
         const updatedPhone = { ...phone, number: newPerson.number };
         console.log('Checking phone', phone);
-        await phoneService.updatePhone(updatedPhone);
+        const updatedPerson = await phoneService.updatePhone(updatedPhone);
+        setPersons(
+          persons.map((person) =>
+            person.id === updatedPerson.id ? updatedPerson : person,
+          ),
+        );
       }
     }
 
     if (checkName === undefined) {
       phoneService.addPhone(newPerson);
       setPersons(persons.concat(newPerson));
+      changeNotification(`Added ${newPerson.name}`, 'success');
     }
   };
 
@@ -60,12 +75,16 @@ const App = () => {
         .then((data) =>
           setPersons(persons.filter((person) => person.id != data.id)),
         );
+      changeNotification(`Removed ${people.name} from database`, 'success');
     } else return;
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
+      {notification.message && (
+        <Notification message={notification.message} type={notification.type} />
+      )}
       <Filter people={persons} filterNames={filterNames} />
       <h2>Add a new Number</h2>
       <PersonForm addPerson={addPerson} />

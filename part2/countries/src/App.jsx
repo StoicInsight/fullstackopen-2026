@@ -8,10 +8,10 @@ function App() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    const allCountries = countryService
-      .getAllCountries()
-      .then((res) => setCountries(res))
-      .then((res) => setAllCountries(res));
+    const allCountries = countryService.getAllCountries().then((res) => {
+      setCountries(res);
+      setAllCountries(res);
+    });
   }, []);
 
   const filterCountries = () => {
@@ -19,13 +19,16 @@ function App() {
       const lowerCountry = country.name.official.toLowerCase();
       return lowerCountry.includes(search);
     });
-      setCountries(filtered);
-    }
+    setCountries(filtered);
   };
 
   const changeSearch = (e) => {
     setSearch(e.target.value);
     filterCountries();
+  };
+
+  const showCountry = (country) => {
+    console.log('Show country clicked', country);
   };
 
   return (
@@ -34,7 +37,7 @@ function App() {
         <p>Find countries</p>
         <input type='text' value={search} onChange={changeSearch} />
       </div>
-      <Country country={countries} />
+      <Country countries={countries} showCountry={showCountry} />
     </div>
   );
 }

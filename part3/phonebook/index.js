@@ -64,7 +64,7 @@ app.post('/api/people', (request, response) => {
   person.save().then((savedPerson) => {
     console.log('Added new person:', savedPerson);
     response.json(savedPerson);
-    mongoose.connection.end();
+    mongoose.connection.close();
   });
 });
 

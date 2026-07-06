@@ -46,7 +46,7 @@ const generateId = () => {
   return String(max + 1);
 };
 
-app.post('/people', (request, response) => {
+app.post('/api/people', (request, response) => {
   const body = request.body;
   if (!body) {
     return response.status(400).json({ error: 'Content missing' });

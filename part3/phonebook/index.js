@@ -5,8 +5,9 @@ const logger = require('./middleware');
 const app = express();
 app.use(express.json());
 app.use(morgan());
+app.use(express.static('dist'));
 app.use(logger.requestLogger);
-const url = 'http://localhost:3005/api/';
+// const url = '/api';
 let people = [
   {
     id: '1',
@@ -102,5 +103,5 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint);
 
-const port = 3005;
+const port = process.env.PORT || 3005;
 app.listen(port);

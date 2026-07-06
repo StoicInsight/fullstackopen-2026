@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const url = 'http://localhost:4000/';
+const url = '/api/people';
 
 const getAll = () => {
   const req = axios.get(url);

@@ -1,35 +1,38 @@
 const express = require('express');
 const morgan = require('morgan');
 const logger = require('./middleware');
-
+const mongoose = require('mongoose');
+const Phone = require('./models/phone');
 const app = express();
+require('dotenv').config();
+
 app.use(express.json());
 app.use(morgan());
 app.use(express.static('dist'));
 app.use(logger.requestLogger);
 // const url = '/api';
-let people = [
-  {
-    id: '1',
-    name: 'Arto Hellas',
-    number: '040-123456',
-  },
-  {
-    id: '2',
-    name: 'Ada Lovelace',
-    number: '39-44-5323523',
-  },
-  {
-    id: '3',
-    name: 'Dan Abramov',
-    number: '12-43-234345',
-  },
-  {
-    id: '4',
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122',
-  },
-];
+// let people = [
+//   {
+//     id: '1',
+//     name: 'Arto Hellas',
+//     number: '040-123456',
+//   },
+//   {
+//     id: '2',
+//     name: 'Ada Lovelace',
+//     number: '39-44-5323523',
+//   },
+//   {
+//     id: '3',
+//     name: 'Dan Abramov',
+//     number: '12-43-234345',
+//   },
+//   {
+//     id: '4',
+//     name: 'Mary Poppendieck',
+//     number: '39-23-6423122',
+//   },
+// ];
 
 const generateId = () => {
   const max =
@@ -49,32 +52,28 @@ app.post('/people', (request, response) => {
     return response.status(400).json({ error: 'Content missing' });
   }
 
-  const person = {
-    id: generateId(),
-    name: body.name,
-    number: body.number,
-  };
-
-  if (!person.name || !person.number) {
+  if (!body.name || !body.number) {
     return response.status(400).json({ error: 'Missing name or number' });
   }
 
-  people.forEach((pep) => {
-    if (pep.name === person.name) {
-      return response.status(400).json({ error: 'Name already exists' });
-    }
-    if (pep.number === person.number) {
-      return response.status(400).json({ error: 'Number already exists' });
-    }
+  const person = new Phone({
+    name: body.name,
+    number: String(body.number),
   });
 
-  people = people.concat(person);
-  return response.json(people);
+  person.save().then((savedPerson) => {
+    console.log('Added new person:', savedPerson);
+    response.json(savedPerson);
+  });
 });
 
-app.get(`/`, (request, response) => {
+app.get(`/api/people`, (request, response) => {
   console.log('Request:', request, 'Response: ', response);
-  response.send(people);
+  // response.send(people);
+  Phone.find({}).then((phone) => {
+    console.log('Finding phone' + phone);
+    response.json(phone);
+  });
 });
 
 app.get('/info', (request, response) => {
@@ -83,14 +82,14 @@ app.get('/info', (request, response) => {
   response.send(`Phonebook has info for ${count} people </br> ${time}`);
 });
 
-app.get('/person/:id', (request, response) => {
-  const id = request.params.id;
-  const person = people.find((per) => per.id === id);
-
-  response.send(person);
+app.get('/api/people/:id', (request, response) => {
+  Phone.findById(request.params.id).then((phone) => {
+    console.log('Found phone', phone);
+    response.json(phone);
+  });
 });
 
-app.delete('/person/:id', (request, response) => {
+app.delete('/api/people/:id', (request, response) => {
   const id = request.params.id;
   const newPeople = people.filter((pep) => pep.id !== id);
 

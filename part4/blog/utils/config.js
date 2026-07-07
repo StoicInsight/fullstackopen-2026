@@ -1,4 +1,11 @@
-const mongoURI = process.env.MONGO_URI;
-const PORT = 3003;
+require('dotenv').config();
+const PORT = process.env.PORT;
 
-module.exports = { PORT, mongoURI };
+const mongoDBURI =
+  process.env.NODE_ENV === 'test'
+    ? process.env.TEST_MONGO_URI
+    : process.env.MONGO_URI;
+
+const mongoURI = process.env.MONGO_URI;
+
+module.exports = { PORT, mongoDBURI };

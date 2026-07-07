@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const Phone = require('./models/phone');
 const app = express();
 require('dotenv').config();
-
 app.use(express.static('dist'));
 app.use(express.json());
 app.use(morgan());
@@ -16,22 +15,14 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'Malformatted ID' });
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message });
   }
 
   next(error);
 };
 
-const generateId = () => {
-  const max =
-    people.id > 0
-      ? Math.max(
-          ...people,
-          people.map((p) => Number(p.id)),
-        )
-      : 0;
-
-  return String(max + 1);
-};
+app.use(errorHandler);
 
 app.post('/people', (request, response) => {
   const body = request.body;
@@ -55,19 +46,13 @@ app.post('/people', (request, response) => {
   });
 });
 
-app.get(`/people`, (request, response) => {
+app.get('/people', (request, response) => {
   console.log('Request:', request, 'Response: ', response);
   // response.send(people);
   Phone.find({}).then((phone) => {
     console.log('Finding phone' + phone);
     response.json(phone);
   });
-});
-
-app.get('/info', (request, response) => {
-  const count = people.length;
-  const time = new Date().toISOString();
-  response.send(`Phonebook has info for ${count} people </br> ${time}`);
 });
 
 app.get('/people/:id', (request, response, next) => {
@@ -104,6 +89,7 @@ app.delete('/people/:id', (request, response, next) => {
   const id = request.params.id;
   Phone.findByIdAndDelete(id)
     .then((result) => {
+      console.log('Deleted person', result);
       response.status(204).end;
     })
     .catch((error) => next(error));

@@ -13,6 +13,7 @@ const addPhone = (phone) => {
     console.log('Adding phone', req.data);
     return req.then((res) => res.data);
   } catch (error) {
+    console.log(error.response.data.error);
     alert(`Error adding the number: ${error}`);
   }
 };

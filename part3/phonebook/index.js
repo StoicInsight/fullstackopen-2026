@@ -6,33 +6,20 @@ const Phone = require('./models/phone');
 const app = express();
 require('dotenv').config();
 
+app.use(express.static('dist'));
 app.use(express.json());
 app.use(morgan());
-app.use(express.static('dist'));
 app.use(logger.requestLogger);
-// const url = '/api';
-// let people = [
-//   {
-//     id: '1',
-//     name: 'Arto Hellas',
-//     number: '040-123456',
-//   },
-//   {
-//     id: '2',
-//     name: 'Ada Lovelace',
-//     number: '39-44-5323523',
-//   },
-//   {
-//     id: '3',
-//     name: 'Dan Abramov',
-//     number: '12-43-234345',
-//   },
-//   {
-//     id: '4',
-//     name: 'Mary Poppendieck',
-//     number: '39-23-6423122',
-//   },
-// ];
+
+const errorHandler = (error, request, response, next) => {
+  console.log(error.message);
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'Malformatted ID' });
+  }
+
+  next(error);
+};
 
 const generateId = () => {
   const max =
@@ -83,18 +70,43 @@ app.get('/info', (request, response) => {
   response.send(`Phonebook has info for ${count} people </br> ${time}`);
 });
 
-app.get('/api/people/:id', (request, response) => {
-  Phone.findById(request.params.id).then((phone) => {
-    console.log('Found phone', phone);
-    response.json(phone);
-  });
+app.get('/api/people/:id', (request, response, next) => {
+  Phone.findById(request.params.id)
+    .then((phone) => {
+      console.log('Found phone', phone);
+      response.json(phone);
+    })
+    .catch((error) => {
+      console.log('Error getting person', error);
+      next(error);
+      response.status(500).send({ error: 'Malformated id' });
+    });
 });
 
-app.delete('/api/people/:id', (request, response) => {
-  const id = request.params.id;
-  const newPeople = people.filter((pep) => pep.id !== id);
+app.put('/api/people/:id', (request, response, next) => {
+  const { name, number } = request.body;
 
-  response.send(newPeople);
+  Phone.findById(request.params.id)
+    .then((phone) => {
+      if (!phone) {
+        return response.status(404).end();
+      }
+      phone.name = name;
+      phone.number = number;
+      return phone.save().then((updatedPhone) => {
+        response.json(updatedPhone);
+      });
+    })
+    .catch((error) => next(error));
+});
+
+app.delete('/api/people/:id', (request, response, next) => {
+  const id = request.params.id;
+  Phone.findByIdAndDelete(id)
+    .then((result) => {
+      response.status(204).end;
+    })
+    .catch((error) => next(error));
 });
 
 const unknownEndpoint = (request, response) => {

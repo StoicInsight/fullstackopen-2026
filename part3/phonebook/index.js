@@ -33,7 +33,7 @@ const generateId = () => {
   return String(max + 1);
 };
 
-app.post('/api/people', (request, response) => {
+app.post('/people', (request, response) => {
   const body = request.body;
   if (!body) {
     return response.status(400).json({ error: 'Content missing' });
@@ -55,7 +55,7 @@ app.post('/api/people', (request, response) => {
   });
 });
 
-app.get(`/api/people`, (request, response) => {
+app.get(`/people`, (request, response) => {
   console.log('Request:', request, 'Response: ', response);
   // response.send(people);
   Phone.find({}).then((phone) => {
@@ -70,7 +70,7 @@ app.get('/info', (request, response) => {
   response.send(`Phonebook has info for ${count} people </br> ${time}`);
 });
 
-app.get('/api/people/:id', (request, response, next) => {
+app.get('/people/:id', (request, response, next) => {
   Phone.findById(request.params.id)
     .then((phone) => {
       console.log('Found phone', phone);
@@ -83,7 +83,7 @@ app.get('/api/people/:id', (request, response, next) => {
     });
 });
 
-app.put('/api/people/:id', (request, response, next) => {
+app.put('/people/:id', (request, response, next) => {
   const { name, number } = request.body;
 
   Phone.findById(request.params.id)
@@ -100,7 +100,7 @@ app.put('/api/people/:id', (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.delete('/api/people/:id', (request, response, next) => {
+app.delete('/people/:id', (request, response, next) => {
   const id = request.params.id;
   Phone.findByIdAndDelete(id)
     .then((result) => {

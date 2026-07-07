@@ -30,7 +30,6 @@ const App = () => {
       name: name,
       number: number,
     };
-    console.log('New person', newPerson);
     const checkName = persons.find((person) => person.name === newPerson.name);
     const checkPhone = persons.find(
       (person) => person.number === newPerson.number,
@@ -44,13 +43,8 @@ const App = () => {
       ) {
         const phone = persons.find((person) => person.name === newPerson.name);
         const updatedPhone = { ...phone, number: newPerson.number };
-        console.log('Checking phone', phone);
         const updatedPerson = await phoneService.updatePhone(updatedPhone);
-        setPersons(
-          persons.map((person) =>
-            person.id === updatedPerson.id ? updatedPerson : person,
-          ),
-        );
+        setPersons(persons.concat(updatedPerson));
       }
     }
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const url = '/api/people';
+const url = '/people';
 
 const getAll = () => {
   const req = axios.get(url);

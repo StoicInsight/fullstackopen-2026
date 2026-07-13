@@ -1,7 +1,7 @@
 const { test, after } = require('node:test');
 const mongoose = require('mongoose');
 const supertest = require('supertest');
-const helper = require('./list_helpter');
+const helper = require('./test_helpter');
 const app = require('../app');
 const assert = require('node:assert');
 const blog = require('../models/blog');
@@ -26,7 +26,9 @@ test('Verify UID is ID', async () => {
   });
 });
 
-test('Post', async () => {
+
+
+test('Create a new blog', async () => {
   const initialBlog = await api.get('/api/blogs');
   const newBlog = {
     title: 'Pierrre',
@@ -47,6 +49,12 @@ test('Post', async () => {
 
   assert.strictEqual(response.body.length, initialBlog.body.length + 1);
 });
+
+test("Delete blog", async() => {
+  const 
+})
+
+test("")
 
 after(async () => await mongoose.connection.close());
 // Once the test is finished, refactor the route handler to use the async/await syntax instead of promises.

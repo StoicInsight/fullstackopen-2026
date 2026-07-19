@@ -6,8 +6,8 @@ require('dotenv').config();
 
 const getTokenFrom = (request) => {
   const authorization = request.get('authorization');
-  if (authorization && authorization.startsWith('Bearer')) {
-    return authorization.replace('Bearer', '');
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '');
   }
   return null;
 };
@@ -36,7 +36,7 @@ blogRouter.post('/', async (request, response) => {
     title: blog.title,
     author: blog.author,
     url: blog.url,
-    like: blog.likes,
+    likes: blog.likes,
     user: user._id,
   });
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const Blog = require('./models/blog');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const blogRouter = require('./controllers/blog');
 const userRouter = require('./controllers/user');
 const loginRouter = require('./controllers/login');
@@ -16,6 +17,7 @@ mongoose
   .then((result) => {})
   .catch((error) => console.log('Error connecting', error));
 
+app.use(cors());
 app.use(express.json());
 app.use(middleware.requestLogger);
 

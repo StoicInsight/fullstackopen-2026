@@ -1,0 +1,73 @@
+
+
+.form { 
+  display:  flex;
+  flex-direction: column;
+  align-items:  start;
+  gap: 1rem;
+}
+
+.input {
+  border:  0;
+  border-bottom: 1px solid black;
+  color: grey;
+}
+
+.button {
+  padding: .5rem;
+  background-color: rgb(64, 64, 247);
+  border-radius: .8rem;
+  color: white;
+  border: none;
+}
+
+.logout {
+  padding: .5rem;
+  background-color: rgb(243, 69, 0);
+  border-radius: .8rem;
+  color: white;
+  border: none;
+}
+.remove {
+  padding: .5rem;
+  background-color: rgb(243, 69, 0);
+  border-radius: .8rem;
+  color: white;
+  border: none;
+}
+.hide {
+  padding: .5rem;
+  background-color: rgb(133, 133, 133);
+  border-radius: .8rem;
+  color: white;
+  border: none;
+}
+
+.error-notification {
+  background-color: gray;
+  border: 1px solid red;
+  color: red;
+}
+.success-notification {
+  background-color: gray;
+  border: 1px solid green;
+  color: green;
+}
+
+.blogs { 
+
+margin-top: .7rem;  
+} 
+
+.blog-item {
+  border: 1px solid black;
+  padding: .5rem;
+  width: 100%;
+}
+
+.btn-wrap {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: .5rem;
+}
